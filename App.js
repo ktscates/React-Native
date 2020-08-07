@@ -1,81 +1,66 @@
 import React, {useState} from 'react';
-import { StyleSheet, Text, View, Button, TextInput, ScrollView, FlatList, TouchableOpacity } from 'react-native';
+import { StyleSheet, View, FlatList, Alert, TouchableWithoutFeedback, Keyboard } from 'react-native';
+import Header from './components/header'
+import TodoItem from './components/todoItem'
+import AddTodo from './components/addTodo'
 
 export default function App() {
 
-  // const [name, setName] = useState('shaun')
+  const [todos, setTodos] = useState([
+    {text: 'buy coffee', key: '1'},
+    {text: 'create an app', key: '2'},
+    {text: 'play on the switch', key: '3'}
+  ])
 
-  // const [person, setPerson] = useState({name: 'mario', age: 40})
-
-  // const clickHandler = () => {
-  //   setName('Cates')
-  //   setPerson({name: 'yoshi', age: 50})
-  // }
-
-  // const [name, setName] = useState('shaun')
-
-  // const [age, setAge] = useState('30')
-
-  const [people, setPeople] = useState([
-    {name: 'shaun', id: '1'},
-    {name: 'yoshi', id: '2'},
-    {name: 'mario', id: '3'},
-    {name: 'luigi', id: '4'},
-    {name: 'peach', id: '5'},
-    {name: 'toad', id: '6'},
-    {name: 'bowser', id: '7'},
-   
-  ]); 
-
-  const pressHandler = (id) => {
-    console.log(id);
-    setPeople((prevPeople) => {
-      return prevPeople.filter(person => person.id != id)
+  const pressHandler = (key) => {
+    setTodos((prevTodos) => {
+      return prevTodos.filter(todo => todo.key != key)
     })
-    // setPeople()
+  }
+
+  const submitHandler = (text) => {
+    return text.length > 5 ? (
+      setTodos((prevTodos) => {
+        return [
+          {text: text, key: Math.random().toString()},
+          ...prevTodos
+        ]
+      })
+    ) : (
+      Alert.alert('OOPS!', 'Todos must be 5 chars long', [
+        {text: 'Understood', onPress: () => console.log('alert closed')}
+      ])
+    ) 
+  }
+
+  const press = () => {
+    // console.log('dismissed keyboard')
+    Keyboard.dismiss()
   }
 
   return (
-    <View style={styles.container}>
-      {/* <Text>My name is {name}</Text>
-      <Text>His name is {person.name} and he's {person.age}</Text>
-      <View style={styles.buttonContainer}>
-        <Button title='update state' onPress={clickHandler}/>
-      </View>  */}
-      {/* <Text>Enter name: </Text>
-      <TextInput 
-          multiline
-          style={styles.input}
-          placeholder = 'e.g John Doe'
-          onChangeText = {(val) => setName(val)}
-        />
-        <Text>Enter age: </Text>
-        <TextInput 
-          keyboardType = 'numeric'
-          style={styles.input}
-          placeholder = 'e.g 50'
-          onChangeText = {(val) => setAge(val)}
-        />
-      <Text>name: {name}, age: {age}</Text> */}
+    <TouchableWithoutFeedback onPress={press}>
+      <View style={styles.container}>
+        {/* header */}
+        <Header />
+        <View style={styles.content}>
+          {/* form */}
+          <AddTodo submitHandler={submitHandler}/>
+          <View style={styles.list}>
+            <FlatList 
+              data={todos}
+              renderItem={({item}) => (
+                <View>  
+                  <TodoItem item={item} pressHandler={pressHandler} />
+                </View>
+              )}
+            />
+          </View>
 
-      {/* <ScrollView>
-        {people.map(item => (
-            <View id={item.id}>
-              <Text style={styles.item}>{item.name}</Text>
-            </View>
-        ))}
-      </ScrollView> */}
-      <FlatList 
-        numColumns={2}
-        keyExtractor={(item) => item.id}
-        data={people}
-        renderItem={({item}) => (
-          <TouchableOpacity onPress={() => pressHandler(item.id)}>
-            <Text style={styles.item}>{item.name}</Text>
-          </TouchableOpacity>
-        )}
-      /> 
-    </View>
+        </View>
+
+      </View>
+    </TouchableWithoutFeedback>
   );
 }
 
@@ -83,31 +68,14 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: 'white',
-    paddingTop: 40,
-    paddingHorizontal: 20
-    // alignItems: 'center',
-    // justifyContent: 'center',
   },
 
-  buttonContainer: {
-    marginTop: 20
+  content: {
+    padding: 40,
   },
 
-  input: {
-    borderWidth: 1,
-    borderColor: '#777',
-    padding: 8,
-    margin: 10,
-    width: 200
-  },
-
-  item: {
-    marginTop: 24,
-    padding: 30,
-    backgroundColor: 'pink',
-    fontSize: 24,
-    marginHorizontal: 10,
-    marginTop: 24
+  list: {
+    marginTop: 20,
   }
 
 });
