@@ -3,6 +3,7 @@ import { StyleSheet, View, FlatList, Alert, TouchableWithoutFeedback, Keyboard }
 import Header from './components/header'
 import TodoItem from './components/todoItem'
 import AddTodo from './components/addTodo'
+import Sandbox from './components/sandbox'
 
 export default function App() {
 
@@ -39,6 +40,7 @@ export default function App() {
   }
 
   return (
+    // <Sandbox />
     <TouchableWithoutFeedback onPress={press}>
       <View style={styles.container}>
         {/* header */}
@@ -61,7 +63,8 @@ export default function App() {
 
       </View>
     </TouchableWithoutFeedback>
-  );
+    
+  )
 }
 
 const styles = StyleSheet.create({
@@ -72,6 +75,7 @@ const styles = StyleSheet.create({
 
   content: {
     padding: 40,
+    flex: 1,
   },
 
   list: {
